@@ -267,7 +267,7 @@
                         type: 'video', // Garante que apenas vídeos sejam retornados
                         videoLicense: 'creativeCommon', // Filtra para licença Creative Commons
                         order: 'date', // Ordena os resultados pelos mais recentes
-                        maxResults: 15 // Limita o número de resultados a 15
+                        maxResults: 40 // Limita o número de resultados a 40
                     });
 
                     // Faz a requisição à API do YouTube
@@ -320,7 +320,7 @@
 
                     // Define o HTML interno para cada item de vídeo, incluindo o nome do criador
                     videoItem.innerHTML = `
-                        <img src="${thumbnailUrl}" alt="${title}" onerror="this.onerror=null;this.src='https://placehold.co/320x180/3e3e6f/ffffff?text=Video+Não+Disponível';">
+                        <img src="${thumbnailUrl}" alt="${title}" onerror="this.onerror=null;this.src='https://placehold.co/320x180/3e3e6f/ffffff?text=Vídeo+Não+Disponível';">
                         <div class="video-info">
                             <h3>${title}</h3>
                             <p>Créditos: ${channelTitle}</p> <!-- Exibe o nome do criador -->
