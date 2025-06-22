@@ -231,7 +231,7 @@
             const videoResults = document.getElementById('videoResults');
 
             // Define a chave da API do YouTube diretamente com o valor fornecido.
-            const YOUTUBE_API_KEY = 'AIzaSyB-3usaUrxs73WlREzJYLLlK25pVvUm59g';
+            const YOUTUBE_API_KEY = 'AIzaSyA9lTd4OlebUWtz4cjQZHB1qai36a2ZI-o';
             const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
             // Adiciona listener para o clique no botão
@@ -265,7 +265,7 @@
                         q: searchTerm,
                         part: 'snippet', // Solicita os detalhes do snippet (título, descrição, etc.)
                         type: 'video', // Garante que apenas vídeos sejam retornados
-                        videoLicense: 'creativeCommons', // Adiciona o filtro para licença Creative Commons
+                        videoLicense: 'creativeCommon', // Filtra para licença Creative Commons
                         order: 'date', // Ordena os resultados pelos mais recentes
                         maxResults: 15 // Limita o número de resultados a 15
                     });
@@ -312,18 +312,18 @@
                     // Usa a miniatura de alta qualidade, com fallback para a padrão se não disponível
                     const thumbnailUrl = video.snippet.thumbnails.high ? video.snippet.thumbnails.high.url : video.snippet.thumbnails.default.url;
                     const title = video.snippet.title;
-                    const channelTitle = video.snippet.channelTitle;
+                    const channelTitle = video.snippet.channelTitle; // Obtém o nome do canal (criador)
                     const publishedAt = new Date(video.snippet.publishedAt).toLocaleDateString('pt-BR'); // Formata a data
 
                     const videoItem = document.createElement('div');
                     videoItem.classList.add('video-item'); // Adiciona a classe CSS
 
-                    // Define o HTML interno para cada item de vídeo
+                    // Define o HTML interno para cada item de vídeo, incluindo o nome do criador
                     videoItem.innerHTML = `
                         <img src="${thumbnailUrl}" alt="${title}" onerror="this.onerror=null;this.src='https://placehold.co/320x180/3e3e6f/ffffff?text=Video+Não+Disponível';">
                         <div class="video-info">
                             <h3>${title}</h3>
-                            <p>Canal: ${channelTitle}</p>
+                            <p>Créditos: ${channelTitle}</p> <!-- Exibe o nome do criador -->
                             <p>Publicado em: ${publishedAt}</p>
                             <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">Assistir no YouTube</a>
                         </div>
