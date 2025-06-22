@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusqueTubeCC</title>
+    <style>
+        /* Estilos CSS incorporados para o modo noturno vibrante */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a2e; /* Fundo escuro para modo noturno */
+            color: #e0e0e0; /* Cor do texto claro */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #2a2a4a; /* Fundo mais claro para o container */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 960px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #8a2be2; /* Azul violeta vibrante */
+            margin-bottom: 25px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+        }
+
+        /* Removido o estilo para .api-key-warning, pois o elemento será removido */
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px; /* Espaço entre input e botão */
+        }
+
+        input[type="text"] {
+            width: 50%; /* Largura da caixa de pesquisa diminuída para 50% */
+            padding: 12px 18px;
+            border: 2px solid #5a189a; /* Borda roxa vibrante */
+            border-radius: 8px;
+            background-color: #3e3e6f; /* Fundo do input */
+            color: #e0e0e0;
+            font-size: 1.1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]::placeholder {
+            color: #b0b0b0;
+        }
+
+        input[type="text"]:focus {
+            border-color: #c77dff; /* Borda mais clara ao focar */
+            box-shadow: 0 0 15px rgba(199, 125, 255, 0.6);
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #ff69b4; /* Rosa choque vibrante */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+        }
+
+        button:hover {
+            background-color: #e04a99; /* Rosa um pouco mais escuro ao hover */
+            transform: translateY(-2px);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+            justify-items: center;
+        }
+
+        .video-item {
+            background-color: #3a3a5e; /* Fundo do item de vídeo */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-item img {
+            width: 100%;
+            height: 180px; /* Altura fixa para a miniatura */
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-item .video-info {
+            padding: 15px;
+            flex-grow: 1; /* Permite que o info ocupe o espaço restante */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .video-item h3 {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+            line-height: 1.4;
+            max-height: 3.6em; /* Limita a altura do título para 3 linhas */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .video-item p {
+            font-size: 0.9em;
+            color: #b0b0b0;
+            margin-bottom: 5px;
+        }
+
+        .video-item a {
+            display: inline-block;
+            background-color: #00bcd4; /* Ciano vibrante para o link */
+            color: #ffffff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            align-self: flex-start; /* Alinha o botão à esquerda */
+        }
+
+        .video-item a:hover {
+            background-color: #0097a7;
+            transform: scale(1.05);
+        }
+
+        .loading-message, .error-message, .no-results {
+            color: #ffeb3b; /* Amarelo vibrante para mensagens */
+            font-size: 1.2em;
+            margin-top: 30px;
+        }
+
+        .error-message {
+            color: #ff5252; /* Vermelho vibrante para mensagens de erro */
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .search-box {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            input[type="text"], button {
+                width: 100%; /* Em telas menores, a largura volta a 100% para melhor usabilidade */
+            }
+
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .video-item img {
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BusqueTubeCC</h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Digite o que deseja pesquisar...">
+            <button id="searchButton">Pesquisar</button>
+        </div>
+        <div id="videoResults" class="video-grid">
+            <!-- Os vídeos serão carregados aqui pelo JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const videoResults = document.getElementById('videoResults');
+
+            // Define a chave da API do YouTube diretamente com o valor fornecido.
+            const YOUTUBE_API_KEY = 'AIzaSyB-3usaUrxs73WlREzJYLLlK25pVvUm59g';
+            const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search';
+
+            // Adiciona listener para o clique no botão
+            searchButton.addEventListener('click', () => {
+                performSearch();
+            });
+
+            // Adiciona listener para a tecla 'Enter' no campo de busca
+            searchInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Função assíncrona para realizar a busca na API do YouTube
+            async function performSearch() {
+                const searchTerm = searchInput.value.trim();
+                if (!searchTerm) {
+                    // Exibe uma mensagem se o campo de busca estiver vazio
+                    videoResults.innerHTML = '<p class="no-results">Por favor, digite um termo de pesquisa.</p>';
+                    return;
+                }
+
+                // Exibe uma mensagem de carregamento enquanto aguarda a resposta da API
+                videoResults.innerHTML = '<p class="loading-message">Carregando vídeos...</p>';
+
+                try {
+                    // Constrói os parâmetros da URL para a requisição da API
+                    const params = new URLSearchParams({
+                        key: YOUTUBE_API_KEY,
+                        q: searchTerm,
+                        part: 'snippet', // Solicita os detalhes do snippet (título, descrição, etc.)
+                        type: 'video', // Garante que apenas vídeos sejam retornados
+                        videoLicense: 'creativeCommons', // Adiciona o filtro para licença Creative Commons
+                        order: 'date', // Ordena os resultados pelos mais recentes
+                        maxResults: 15 // Limita o número de resultados a 15
+                    });
+
+                    // Faz a requisição à API do YouTube
+                    const response = await fetch(`${YOUTUBE_API_URL}?${params.toString()}`);
+                    
+                    // Verifica se a resposta da API foi bem-sucedida (status 200 OK)
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Erro na API do YouTube:', errorData);
+                        // Mensagem de erro mais amigável para o usuário
+                        const errorMessage = errorData.error && errorData.error.message ? errorData.error.message : response.statusText;
+
+                        throw new Error(`Erro na API: ${response.status} - ${errorMessage}`);
+                    }
+                    
+                    // Converte a resposta para JSON
+                    const data = await response.json();
+                    
+                    // Exibe os vídeos na página
+                    displayVideos(data.items);
+
+                } catch (error) {
+                    // Captura e exibe erros que podem ocorrer durante a requisição
+                    console.error('Erro ao buscar vídeos:', error);
+                    videoResults.innerHTML = `<p class="error-message">Erro ao carregar vídeos: ${error.message}. Por favor, tente novamente.</p>`;
+                }
+            } // Fechamento da função performSearch
+
+            // Função para exibir os vídeos no DOM
+            function displayVideos(videos) {
+                videoResults.innerHTML = ''; // Limpa os resultados anteriores
+
+                // Se nenhum vídeo for encontrado, exibe uma mensagem
+                if (videos.length === 0) {
+                    videoResults.innerHTML = '<p class="no-results">Nenhum vídeo encontrado para sua pesquisa.</p>';
+                    return;
+                }
+
+                // Itera sobre cada vídeo e cria o elemento HTML correspondente
+                videos.forEach(video => {
+                    const videoId = video.id.videoId;
+                    // Usa a miniatura de alta qualidade, com fallback para a padrão se não disponível
+                    const thumbnailUrl = video.snippet.thumbnails.high ? video.snippet.thumbnails.high.url : video.snippet.thumbnails.default.url;
+                    const title = video.snippet.title;
+                    const channelTitle = video.snippet.channelTitle;
+                    const publishedAt = new Date(video.snippet.publishedAt).toLocaleDateString('pt-BR'); // Formata a data
+
+                    const videoItem = document.createElement('div');
+                    videoItem.classList.add('video-item'); // Adiciona a classe CSS
+
+                    // Define o HTML interno para cada item de vídeo
+                    videoItem.innerHTML = `
+                        <img src="${thumbnailUrl}" alt="${title}" onerror="this.onerror=null;this.src='https://placehold.co/320x180/3e3e6f/ffffff?text=Video+Não+Disponível';">
+                        <div class="video-info">
+                            <h3>${title}</h3>
+                            <p>Canal: ${channelTitle}</p>
+                            <p>Publicado em: ${publishedAt}</p>
+                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">Assistir no YouTube</a>
+                        </div>
+                    `;
+                    // Adiciona o item de vídeo à grade de resultados
+                    videoResults.appendChild(videoItem);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
